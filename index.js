@@ -11,7 +11,7 @@
 // });
 import express from "express";
 import cors from "cors";
-
+import moment from "moment/moment.js";
 // --------------> DB setup <--------------
 import mysql from 'mysql';
 const dbUrl = process.env.REACT_APP_DB_URL;
@@ -116,18 +116,48 @@ app.get("/api/records/:id", (req, res) => {
   
   app.post("/api/records", (req, res) => {
     const record = req.body;
+    const dob = moment(record.dob).format("YYYY-MM-DD")
     db.query(
-      `INSERT INTO records (name, fatherName, motherName, tehsil, district, dob, status, isHead, headID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO records (
+        name, 
+        fatherName, 
+        motherName, 
+        tehsil, 
+        district, 
+        dob, 
+        status, 
+        isHead, 
+        headID,
+
+        gotra,
+        education,
+        profession,
+        relation,
+
+        mvillage,
+        village,
+        paddress,
+        raddress) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         record.name,
         record.fatherName,
         record.motherName,
         record.tehsil,
         record.district,
-        record.dob,
+        dob,
         record.status,
         record.isHead,
         record.headID, // Ensure headID is set properly if provided
+
+        record.gotra,
+        record.education,
+        record.profession,
+        record.relation,
+
+        record.mvillage,
+        record.village,
+        record.paddress,
+        record.raddress,
       ],
       (err) => {
         if (err) {
@@ -144,16 +174,52 @@ app.get("/api/records/:id", (req, res) => {
   app.put("/api/records/:id", (req, res) => {
     const id = req.params.id;
     const record = req.body;
+    const dob = moment(record.dob).format("YYYY-MM-DD")
     db.query(
-      "UPDATE records SET name = ?, fatherName = ?, motherName = ?, tehsil = ?, district = ?, dob = ?, status = ?, isHead = ?, headID = ? WHERE id = ?",
+      `UPDATE records SET 
+      name = ?, 
+      fatherName = ?, 
+      motherName = ?, 
+
+      mvillage=?, 
+      village=?, 
+      tehsil = ?, 
+      district = ?, 
+      paddress=?, 
+      raddress=?, 
+      
+      mobilenumber=?,
+      gotra=?, 
+      dob = ?, 
+      status = ?,
+
+      relation=?,
+      education=?,
+      profession=?, 
+      
+      isHead = ?, 
+      headID = ? WHERE id = ?`,
       [
         record.name,
         record.fatherName,
         record.motherName,
+
+        record.mvillage,
+        record.village,
         record.tehsil,
         record.district,
-        record.dob,
+        record.paddress,
+        record.raddress,
+
+        record.mobilenumber,
+        record.gotra,
+        dob,
         record.status,
+
+        record.relation,
+        record.education,
+        record.profession,
+
         record.isHead,
         record.headID, // Ensure headID is set properly if provided
         id,
